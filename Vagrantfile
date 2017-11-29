@@ -1,5 +1,6 @@
 Vagrant.configure("2") do |config|
-	config.vm.box = "ubunut/xenial64"
+
+	config.vm.box = "ubuntu/xenial64"
 
 	# shared ports
 	config.vm.network "forwarded_port", host:888, guest:80
@@ -16,7 +17,7 @@ Vagrant.configure("2") do |config|
 	end
 
 	# install system packages as root user
-	config.vm.provision "shell", privileged: true, inline: <<shell
+	config.vm.provision 'shell', privileged: true, inline: <<SHELL
 
 #############################################################################
 echo "================ Update packages ===================="
@@ -35,7 +36,7 @@ apt-get -q -y install apache2
 apt-get -q -y install php7.0 mcrypt php7.0-mcrypt php-mbstring php-pear php7.0-dev php7.0-dev php7.0-xml libapache2-mod-php7.0
 apt-get -q -y install php7.0-opcache php7.0-cli php7.0curl php7.0-mysql
 apt-get -q -y install php-xdebug
-apt-get -q - y install re2c gcc g++
+apt-get -q -y install re2c gcc g++
 
 
 echo "=================== Configure PHP ==================="
@@ -99,7 +100,7 @@ service apache2 restart
 
 # add database name
 echo "=================== Configure Mysql ==================="
-mysql -u root -e "CREATE DATABASE marketing_info CHARACTER SET utf8 COLLATE utf8_gneral_ci";
+mysql -u root -e "CREATE DATABASE marketing_info CHARACTER SET utf8 COLLATE utf8_general_ci";
 mysql -u root -e "CREATE USER marketing@'&' IDENTIFIED BY 'marketing'";
 mysql -u root -e "GRANT ALL PRIVILEGES ON marketing_info.* TO 'marketing'@'%'"
 if [ -e /vagrant/data/seed-mysql.sql ]; then
@@ -117,7 +118,8 @@ SHELL
 
 ##########################################################################################
 # Add autojump and history search to bashrc
-if [ $(grep -c "autojump" .bashrc) -eq 0]; then
+
+if [ $(grep -c "autojump" .bashrc) -eq 0 ]; then
 	cat <<- 'EOF' >> .bashrc
 
 # enable autojump
